@@ -1,21 +1,22 @@
 # Análise Exploratória de Vendas
 
-Este projeto realiza uma análise exploratória de dados (EDA) em um conjunto de dados de vendas, utilizando bibliotecas como Pandas, Matplotlib e Seaborn. O objetivo é identificar padrões, tendências e insights úteis a partir dos dados.
+Este projeto realiza uma Análise exploratória de dados (EDA) em um conjunto de dados de vendas, utilizando bibliotecas como **Pandas**, **Matplotlib** e **Seaborn**. O objetivo é identificar padrões, tendências e insights úteis a partir dos dados.
 
 ## Funcionalidades
 
 - Carregamento e limpeza de dados.
-- Verificação de valores nulos e tratamento de dados ausentes.
-- Ticket médio de vendas
-- Análise das colunas principais, como produtos mais vendidos e frequência de vendas.
-- Visualização de dados com gráficos interativos e estáticos.
+- Verificação de valores nulos e duplicados.
+- Cálculo do ticket médio das vendas.
+- Identificação dos produtos mais vendidos.
+- Visualização de dados com gráficos de barras.
+- Análise temporal e categórica (se as colunas necessárias existirem).
 
 ## Tecnologias Utilizadas
 
-- Python: Linguagem principal do projeto.
-- Pandas: Manipulação e análise de dados.
-- Matplotlib: Criação de gráficos estáticos.
-- Seaborn: Visualização de dados avançada.
+- **Python**: Linguagem principal do projeto.
+- **Pandas**: Manipulação e análise de dados.
+- **Matplotlib**: Criação de gráficos estáticos.
+- **Seaborn**: Visualização de dados avançada.
 
 ## Etapas da Análise Exploratória
 
@@ -42,15 +43,23 @@ Este projeto realiza uma análise exploratória de dados (EDA) em um conjunto de
      ```python
      print(df.isnull().sum())
      ```
-   - Remoção de valores nulos:
+   - Remoção de duplicados:
      ```python
-     df.dropna(inplace=True)
+     df.drop_duplicates(inplace=True)
      ```
 
-4. **Análise de Produtos Mais Vendidos**
+4. **Cálculo do Ticket Médio**
+   - O ticket médio é calculado com base no preço e na quantidade:
+     ```python
+     df["total_venda"] = df["price_y"] * df["quantity"]
+     ticket_medio = df.groupby("sale_id")["total_venda"].mean()
+     print("Ticket médio:", ticket_medio.mean())
+     ```
+
+5. **Produtos Mais Vendidos**
    - Identificação dos 10 produtos mais vendidos:
      ```python
-     top_products = df['Product'].value_counts().head(10)
+     top_produtos = df['product'].value_counts().head(10)
      ```
    - Visualização com gráfico de barras:
      ```python
@@ -58,17 +67,27 @@ Este projeto realiza uma análise exploratória de dados (EDA) em um conjunto de
      import seaborn as sns
 
      plt.figure(figsize=(10, 5))
-     sns.barplot(x=top_products.index, y=top_products.values)
+     sns.barplot(x=top_produtos.index, y=top_produtos.values)
      plt.title("Top 10 Produtos Mais Vendidos")
      plt.xlabel("Produto")
-     plt.ylabel("Frequência")
+     plt.ylabel("Quantidade Vendida")
+     plt.xticks(rotation=45)
      plt.show()
      ```
 
-5. **Outras Análises**
-   - Frequência de vendas por categoria.
-   - Análise temporal (vendas por mês ou ano).
-   - Identificação de outliers.
+6. **Análise Temporal**
+   - Conversão da coluna de data para o formato datetime:
+     ```python
+     df['created_at'] = pd.to_datetime(df['created_at'])
+     ```
+
+7. **Análise de Outliers**
+   - Detecção de outliers com base nos preços:
+     ```python
+     sns.boxplot(x=df['price_y'])
+     plt.title("Distribuição de Preços")
+     plt.show()
+     ```
 
 
 #######3
